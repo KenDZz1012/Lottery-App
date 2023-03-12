@@ -11,9 +11,25 @@ import {
 import { TextInput } from "react-native-element-textinput";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { NavigationContainer } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 
 const Login = ({ navigation }) => {
   const [showPass, setShowPass] = useState(true);
+  const [dataLogin, setDataLogin] = useState({
+    userName: "admin",
+    password: "admin123",
+  });
+
+  const onSubmit = () => {
+    if (dataLogin.userName == "admin" && dataLogin.password == "admin123") {
+      navigation.navigate("Main", { screen: "Menu" });
+    } else {
+      Toast.show({  
+        type: "error",
+        text1: "Sai tên đăng nhập hoặc mật khẩu",
+      });
+    }
+  };
   return (
     <View
       style={{
@@ -30,7 +46,6 @@ const Login = ({ navigation }) => {
           style={{
             fontWeight: "bold",
             fontSize: 20,
-            marginTop: 20,
             textTransform: "uppercase",
             color: "#da251c",
             textAlign: "center",
@@ -50,6 +65,7 @@ const Login = ({ navigation }) => {
         >
           phân tích xổ số
         </Text>
+        <Toast />
 
         <Image
           source={require("../../assets/logoIcon.png")}
@@ -73,7 +89,7 @@ const Login = ({ navigation }) => {
           Đăng nhập
         </Text>
       </View>
-      <View style={{ marginTop: 40, flexDirection: "row", paddingRight: 20 }}>
+      <View style={{ marginTop: 20, flexDirection: "row", paddingRight: 20 }}>
         <MaterialCommunityIcons
           name="account"
           size={26}
@@ -81,6 +97,7 @@ const Login = ({ navigation }) => {
         />
         <TextInput
           placeholder="Tài khoản"
+          value={dataLogin.userName}
           style={{
             borderBottomColor: "#ccc",
             borderBottomWidth: 1,
@@ -88,6 +105,12 @@ const Login = ({ navigation }) => {
             width: 280,
             height: 40,
             padding: 10,
+          }}
+          onChangeText={(text) => {
+            setDataLogin({
+              ...dataLogin,
+              userName: text,
+            });
           }}
         ></TextInput>
       </View>
@@ -98,6 +121,7 @@ const Login = ({ navigation }) => {
           style={{ marginLeft: 10, marginTop: 16 }}
         />
         <TextInput
+          value={dataLogin.password}
           secureTextEntry={showPass}
           placeholder="Mật khẩu"
           style={{
@@ -108,6 +132,13 @@ const Login = ({ navigation }) => {
             height: 40,
             marginTop: 10,
             padding: 10,
+          }}
+          onChangeText={(text) => {
+            console.log(text)
+            setDataLogin({
+              ...dataLogin,
+              password: text,
+            });
           }}
         ></TextInput>
         <MaterialCommunityIcons
@@ -127,7 +158,7 @@ const Login = ({ navigation }) => {
             width: 300,
             borderRadius: 20,
           }}
-          onPress={() => navigation.navigate("Main", { screen: "Menu" })}
+          onPress={onSubmit}
         >
           <Text style={{ color: "#fff", textAlign: "center" }}>Đăng nhập</Text>
         </TouchableOpacity>

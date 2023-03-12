@@ -37,6 +37,7 @@ const ConfirmDelete = ({ modal, onToggle, onDelete }) => {
               marginRight: 20,
               borderRadius: 6,
             }}
+            onPress={onDelete}
           >
             <Text style={{ textAlign: "center" }}>OK</Text>
           </TouchableOpacity>

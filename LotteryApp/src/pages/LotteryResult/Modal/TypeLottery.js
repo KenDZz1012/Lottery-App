@@ -1,8 +1,72 @@
-import React from "react";
-import { Modal, Text, TouchableOpacity, View } from "react-native";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Alert, Modal, Text, TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-element-textinput";
+import Toast from "react-native-toast-message";
 
-const TypeLottery = ({ modal, onToggle, data, isEdit }) => {
+const TypeLottery = ({ modal, onToggle, data, isEdit, onFetchCategories }) => {
+  const [dataPost, setDataPost] = useState({
+    categoryId: 0,
+    categoryName: "",
+  });
+  useEffect(() => {
+    if (isEdit) {
+      setDataPost({
+        categoryId: data.value,
+        categoryName: data.label,
+      });
+    }
+  }, [modal]);
+
+  const onSubmit = async () => {
+    if (dataPost.categoryName == "") {
+      Toast.show({
+        type: "error",
+        text1: "Không để trống dữ liệu",
+      });
+      return;
+    }
+    if (!isEdit) {
+      await axios
+        .post("http://192.168.1.17:5000/api/v1/category", dataPost)
+        .then((response) => {
+          Toast.show({
+            type: "success",
+            text1: "Thêm mới thành công",
+          });
+          setTimeout(() => {
+            onToggle();
+            onFetchCategories();
+          }, 1500);
+        })
+        .catch((ex) => {
+          Toast.show({
+            type: "error",
+            text1: ex.response.data,
+          });
+        });
+    } else {
+      await axios
+        .put("http://192.168.1.17:5000/api/v1/category", dataPost)
+        .then((response) => {
+          Toast.show({
+            type: "success",
+            text1: "Sửa dữ liệu thành công",
+          });
+          setTimeout(() => {
+            onToggle();
+            onFetchCategories();
+          }, 1500);
+        })
+        .catch((ex) => {
+          Toast.show({
+            type: "error",
+            text1: ex.response.data,
+          });
+        });
+    }
+  };
+
   return (
     <Modal
       visible={modal}
@@ -10,6 +74,8 @@ const TypeLottery = ({ modal, onToggle, data, isEdit }) => {
       onRequestClose={onToggle}
       transparent={true}
     >
+      <Toast />
+
       <View
         style={{
           backgroundColor: "#fff",
@@ -23,13 +89,19 @@ const TypeLottery = ({ modal, onToggle, data, isEdit }) => {
       >
         <Text>Thêm mới loại xổ số</Text>
         <TextInput
-          value={isEdit ? data : ""}
+          value={isEdit ? dataPost.categoryName : ""}
           style={{
             borderColor: "#01458e",
             borderWidth: 1,
             height: 40,
             paddingLeft: 10,
             marginTop: 10,
+          }}
+          onChangeText={(text) => {
+            setDataPost({
+              ...dataPost,
+              categoryName: text,
+            });
           }}
         />
         <View
@@ -47,6 +119,7 @@ const TypeLottery = ({ modal, onToggle, data, isEdit }) => {
               marginRight: 20,
               borderRadius: 6,
             }}
+            onPress={onSubmit}
           >
             <Text style={{ textAlign: "center" }}>Lưu</Text>
           </TouchableOpacity>

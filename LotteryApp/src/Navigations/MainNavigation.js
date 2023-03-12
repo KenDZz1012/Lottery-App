@@ -5,6 +5,7 @@ import Menu from "../pages/Menu";
 import { Button, TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import LotteryResult from "../pages/LotteryResult";
+import ContainerAnalysis from "./ContainerAnalysis";
 const screenOptionStyle = {
   title: "PHẦN MỀM PHÂN TÍCH SỔ XỐ",
   headerStyle: {
@@ -43,6 +44,26 @@ const MainNavigation = () => {
         component={LotteryResult}
         options={({ navigation }) => ({
           title: "KẾT QUẢ SỔ XỐ",
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Login");
+              }}
+            >
+              <MaterialCommunityIcons
+                name="logout"
+                size={26}
+                style={{ color: "#fff" }}
+              />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="AnalysisResult"
+        component={ContainerAnalysis}
+        options={({ navigation }) => ({
+          title: "PHÂN TÍCH SỐ LIỆU",
           headerRight: () => (
             <TouchableOpacity
               onPress={() => {

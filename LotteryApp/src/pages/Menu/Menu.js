@@ -35,6 +35,7 @@ const Menu = ({ navigation }) => {
             }}
             onPress={() => navigation.navigate("LotteryResult")}
           >
+
             <Text
               style={{
                 color: "#fff",
@@ -58,6 +59,7 @@ const Menu = ({ navigation }) => {
               alignSelf: "center",
               height: 100,
             }}
+            onPress={() => navigation.navigate("AnalysisResult")}
           >
             <Text
               style={{

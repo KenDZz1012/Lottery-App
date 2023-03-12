@@ -3,11 +3,16 @@ import { StyleSheet, Text, View } from "react-native";
 import AppNavigation from "./src/Navigations/AppNavigation";
 import { NavigationContainer } from "@react-navigation/native";
 import MainNavigation from "./src/Navigations/MainNavigation";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {  LogBox } from "react-native"
+LogBox.ignoreAllLogs();
 export default function App() {
   return (
-    <NavigationContainer>
-      <AppNavigation />
-    </NavigationContainer>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <NavigationContainer>
+        <AppNavigation />
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }
 
