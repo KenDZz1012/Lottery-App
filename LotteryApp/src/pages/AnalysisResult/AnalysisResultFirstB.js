@@ -24,7 +24,7 @@ const AnalysisResultFirstB = () => {
 
   const onFetchCategories = async () => {
     let dataCate = [];
-    const res = await axios.get("http://192.168.1.17:5000/api/v1/category");
+    const res = await axios.get("http://118.70.81.222:8081/api/v1/category");
     res.data.map((item) => {
       dataCate.push({
         label: item.categoryName,
@@ -44,7 +44,7 @@ const AnalysisResultFirstB = () => {
     let stringSecondHead = "";
     let stringThirdHead = "";
     const res = await axios.get(
-      `http://192.168.1.17:5000/api/v1/result/CalResultTail?type=firstprize&categoryId=${categoryId}`
+      `http://118.70.81.222:8081/api/v1/result/CalResultTail?type=firstprize&categoryId=${categoryId}`
     );
     if (res.status == 200) {
       res.data.map((item, index) => {

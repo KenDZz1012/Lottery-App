@@ -28,7 +28,7 @@ const TypeLottery = ({ modal, onToggle, data, isEdit, onFetchCategories }) => {
     }
     if (!isEdit) {
       await axios
-        .post("http://192.168.1.17:5000/api/v1/category", dataPost)
+        .post("http://118.70.81.222:8081/api/v1/category", dataPost)
         .then((response) => {
           Toast.show({
             type: "success",
@@ -47,7 +47,7 @@ const TypeLottery = ({ modal, onToggle, data, isEdit, onFetchCategories }) => {
         });
     } else {
       await axios
-        .put("http://192.168.1.17:5000/api/v1/category", dataPost)
+        .put("http://118.70.81.222:8081/api/v1/category", dataPost)
         .then((response) => {
           Toast.show({
             type: "success",

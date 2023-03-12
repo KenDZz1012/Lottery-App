@@ -59,7 +59,7 @@ const Result = ({
   const onSubmit = async () => {
     if (!isEdit) {
       await axios
-        .post("http://192.168.1.17:5000/api/v1/result", dataPost)
+        .post("http://118.70.81.222:8081/api/v1/result", dataPost)
         .then((response) => {
           Toast.show({
             type: "success",
@@ -78,7 +78,7 @@ const Result = ({
         });
     } else {
       await axios
-        .put("http://192.168.1.17:5000/api/v1/Result", dataPost)
+        .put("http://118.70.81.222:8081/api/v1/Result", dataPost)
         .then((response) => {
           Toast.show({
             type: "success",

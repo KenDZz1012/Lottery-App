@@ -42,7 +42,7 @@ const LotteryResult = () => {
   const [loading, setLoading] = useState(false);
   const onFetchCategories = async () => {
     let dataCate = [];
-    const res = await axios.get("http://192.168.1.17:5000/api/v1/category");
+    const res = await axios.get("http://118.70.81.222:8081/api/v1/category");
     res.data.map((item) => {
       dataCate.push({
         label: item.categoryName,
@@ -61,7 +61,7 @@ const LotteryResult = () => {
     setLoading(true);
     let table = [];
     const res = await axios.get(
-      `http://192.168.1.17:5000/api/v1/Result?categoryId=${categoryId}&page=${page}`
+      `http://118.70.81.222:8081/api/v1/Result?categoryId=${categoryId}&page=${page}`
     );
     setDataResults(res.data.ResultVMs);
     setTotalSize(res.data.totalSize);
@@ -88,7 +88,7 @@ const LotteryResult = () => {
 
   const onDelete = async () => {
     const res = await axios.delete(
-      `http://192.168.1.17:5000/api/v1/category/${value}`
+      `http://118.70.81.222:8081/api/v1/category/${value}`
     );
     if (res.status == 200) {
       Toast.show({
@@ -102,7 +102,7 @@ const LotteryResult = () => {
 
   const onDeleteResult = async () => {
     const res = await axios.delete(
-      `http://192.168.1.17:5000/api/v1/result/${row.resultId}`
+      `http://118.70.81.222:8081/api/v1/result/${row.resultId}`
     );
     if (res.status == 200) {
       Toast.show({
