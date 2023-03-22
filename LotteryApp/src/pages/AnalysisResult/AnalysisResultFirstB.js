@@ -37,12 +37,13 @@ const AnalysisResultFirstB = () => {
 
   const onFetchCalResult = async (categoryId) => {
     setLoading(true);
-    let data = [["Đầu", "", "Đít", ""]];
+    let data = [["Nhất B"], ["Đầu", "", "Đít", ""]];
     let min = 0;
-    let head = ["Nhất B"];
     let stringFirstHead = "";
     let stringSecondHead = "";
     let stringThirdHead = "";
+    let strNumberHead = [];
+
     const res = await axios.get(
       `http://118.70.81.222:8081/api/v1/result/CalResultTail?type=firstprize&categoryId=${categoryId}`
     );
@@ -55,48 +56,42 @@ const AnalysisResultFirstB = () => {
         dataItem.push(item.SecondTail);
         data.push(dataItem);
       });
-      setTableData(data);
       data.map((item) => {
-        if (item[1] > 5 || item[3] > 5) {
-          if (stringFirstHead.length < 3) {
-            stringFirstHead += item[0];
-          }
-          if (stringSecondHead.length < 4) {
-            stringSecondHead += item[0];
-          }
-          if (stringThirdHead.length < 5) {
-            stringThirdHead += item[0];
-          }
+        if (item[1] > 5 && item[3] > 5) {
+          strNumberHead.push(item);
         }
       });
-      head.push(stringFirstHead);
-      head.push(stringSecondHead);
-      head.push(stringThirdHead);
-      setTableHead(head);
-      for (var i = 0; i < data.length; i++) {
-        if (Number(data[i][1]) > 5 || Number(data[i][3]) > 5) {
-          min =
-            Number(data[i][1]) > Number(data[i][3])
-              ? Number(data[i][1])
-              : Number(data[i][3]);
-          setNumberMin(data[i][0]);
-          break;
+      let sortData = strNumberHead.sort(
+        (a, b) => 
+        {
+          if(Number(b[1]) + Number(b[3]) - Number(a[1]) - Number(a[3]) < 0){
+            return -1
+          }
+          else if(Number(b[1]) + Number(b[3]) - Number(a[1]) - Number(a[3]) == 0 && Math.max(Number(b[1]),Number(b[3])) - Math.max(Number(a[1]),Number(a[3])) < 0 ){
+            
+            return -1
+          }
+          return 0
+        }
+      );
+      for (let i = 0; i < sortData.length; i++) {
+        if (stringFirstHead.length < 3) {
+          stringFirstHead += sortData[i][0];
+        }
+        if (stringFirstHead.length < 4) {
+          stringSecondHead += sortData[i][0];
+        }
+        if (stringFirstHead.length < 5) {
+          stringThirdHead += sortData[i][0];
         }
       }
-      data.forEach((item) => {
-        if (item[1] > 5 || item[3] > 5) {
-          let numberCheck =
-            Number(item[1]) >= Number(item[3])
-              ? Number(item[1])
-              : Number(item[3]);
-          if (numberCheck < min) {
-            min = numberCheck;
-            setNumberMin(item[0]);
-          }
-        }
-      });
+      data[0].push(stringFirstHead.length == 3 ? stringFirstHead : "");
+      data[0].push(stringSecondHead.length == 4 ? stringSecondHead : "");
+      data[0].push(stringThirdHead.length == 5 ? stringThirdHead : "");
+
+      setTableData(data);
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -153,20 +148,18 @@ const AnalysisResultFirstB = () => {
           />
         ) : (
           <Table borderStyle={{ borderWidth: 1, borderColor: "#C1C0B9" }}>
-            <Row
-              data={tableHead}
-              style={{ height: 40, backgroundColor: "#cbdfea" }}
-              textStyle={{ textAlign: "center" }}
-              widthArr={widthArr}
-            />
             {tableData.map((rowData, index) =>
-              rowData[1] > 5 || rowData[3] > 5 ? (
+              rowData[1] >= 5 && rowData[3] >= 5 ? (
                 <TableWrapper
                   key={index}
                   style={{
                     flexDirection: "row",
                     backgroundColor:
-                      rowData[0] == numberMin ? "purple" : "yellow",
+                      (rowData[1] == 5 || rowData[3] == 5) && index != 0
+                        ? "#7471d8"
+                        : rowData[1] >= 6 && rowData[3] >= 6 && index != 0
+                        ? "#fafa9f"
+                        : "#cbdfea",
                   }}
                 >
                   {rowData.map((cellData, cellIndex) => (
@@ -183,7 +176,13 @@ const AnalysisResultFirstB = () => {
                   ))}
                 </TableWrapper>
               ) : (
-                <TableWrapper key={index} style={{ flexDirection: "row" }}>
+                <TableWrapper
+                  key={index}
+                  style={{
+                    flexDirection: "row",
+                    backgroundColor: (index = 0 && "#cbdfea"),
+                  }}
+                >
                   {rowData.map((cellData, cellIndex) => (
                     <Cell
                       flex={widthArr[cellIndex]}

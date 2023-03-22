@@ -59,7 +59,7 @@ const LotteryResult = () => {
 
   const onFetchResults = async (categoryId) => {
     setLoading(true);
-    let table = [];
+    let table = [["Id", "Ngày", "Đề", "Nhất", ""]];
     const res = await axios.get(
       `http://118.70.81.222:8081/api/v1/Result?categoryId=${categoryId}&page=${page}`
     );
@@ -75,7 +75,7 @@ const LotteryResult = () => {
       });
       for (const key of Object.keys(item)) {
         arrItem.push(item[key]);
-      }
+      } 
       table.push(arrItem);
     });
     setTableData(table);
@@ -225,27 +225,25 @@ const LotteryResult = () => {
           <ActivityIndicator
             size={"large"}
             color="#01458e"
-            style={{ marginTop: 100, marginBottom: 385 }}
+            style={{ marginTop: 100, marginBottom: 300 }}
           />
         ) : (
           <Table borderStyle={{ borderWidth: 1, borderColor: "#C1C0B9" }}>
-            <Row
-              data={tableHead}
-              style={{ height: 40, backgroundColor: "#cbdfea" }}
-              textStyle={{ textAlign: "center" }}
-              widthArr={widthArr}
-            />
             {tableData.map((rowData, index) => (
               <TableWrapper
                 key={index}
-                style={{ flexDirection: "row", height: 48 }}
+                style={{
+                  flexDirection: "row",
+                  height: 40,
+                  backgroundColor: index == 0 ? "#cbdfea" : "",
+                }}
               >
                 {rowData.map((cellData, cellIndex) => (
                   <Cell
                     flex={widthArr[cellIndex]}
                     key={cellIndex}
                     data={
-                      cellIndex === 4 ? (
+                      cellIndex === 4 && index != 0 ? (
                         <View style={{ flexDirection: "row" }}>
                           <TouchableOpacity
                             onPress={() => {

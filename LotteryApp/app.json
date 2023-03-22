@@ -19,7 +19,8 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.kendz.lottery"
+      "bundleIdentifier": "com.kendz.lottery",
+      "bitcode": false  
     },
     "android": {
       "adaptiveIcon": {

@@ -25,15 +25,11 @@ const Result = ({
 
   useEffect(() => {
     if (isEdit) {
+      let [day, month, year] = data.dateIn.split("/");
+      const dateObj = new Date(+year, +month - 1, +day);
       setDataPost({
         resultId: data.resultId,
-        dateIn: new Date(
-          new Date(data.dateIn).toLocaleString("vi-VN", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-          })
-        ),
+        dateIn: dateObj,
         firstPrize: data.firstPrize,
         specialPrize: data.specialPrize,
         categoryId: categoryId,
@@ -51,9 +47,6 @@ const Result = ({
 
   const onChange = (event, value) => {
     setDataPost({ ...dataPost, dateIn: value });
-    if (Platform.OS === "android") {
-      setIsPickerShow(false);
-    }
   };
 
   const onSubmit = async () => {
@@ -98,12 +91,7 @@ const Result = ({
     }
   };
   return (
-    <Modal
-      visible={modal}
-      animationType="slide"
-      onRequestClose={onToggle}
-      transparent={true}
-    >
+    <Modal visible={modal} onRequestClose={onToggle} transparent={true}>
       <Toast />
 
       <View
@@ -128,6 +116,7 @@ const Result = ({
             is24Hour={true}
             style={{ alignSelf: "center" }}
             maximumDate={new Date()}
+            disabled={isEdit}
           />
           <TextInput
             keyboardType="numeric"
