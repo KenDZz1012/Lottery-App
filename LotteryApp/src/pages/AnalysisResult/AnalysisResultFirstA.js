@@ -77,10 +77,10 @@ const AnalysisResultFirstA = () => {
         if (stringFirstHead.length < 3) {
           stringFirstHead += sortData[i][0];
         }
-        if (stringFirstHead.length < 4) {
+        if (stringSecondHead.length < 4) {
           stringSecondHead += sortData[i][0];
         }
-        if (stringFirstHead.length < 5) {
+        if (stringThirdHead.length < 5) {
           stringThirdHead += sortData[i][0];
         }
       }
