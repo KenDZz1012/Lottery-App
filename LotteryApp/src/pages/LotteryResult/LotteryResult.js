@@ -116,7 +116,7 @@ const LotteryResult = () => {
   };
 
   return (
-    <View style={{ backgroundColor: "#fff", height: "100%" }}>
+    <ScrollView style={{ backgroundColor: "#fff", height: "100%" }}>
       <View style={{ backgroundColor: "#cbdfea", padding: 20 }}>
         <Text
           style={{
@@ -150,6 +150,7 @@ const LotteryResult = () => {
               setValue(val);
             }
           }}
+          placeholder=""
         />
         <TouchableOpacity
           onPress={() => {
@@ -234,7 +235,7 @@ const LotteryResult = () => {
                 key={index}
                 style={{
                   flexDirection: "row",
-                  height: 40,
+                  height: 45,
                   backgroundColor: index == 0 ? "#cbdfea" : "",
                 }}
               >
@@ -354,7 +355,7 @@ const LotteryResult = () => {
           onFetchResults={onFetchResults}
         />
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

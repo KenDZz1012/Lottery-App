@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Text, View, ActivityIndicator } from "react-native";
+import { Text, View, ActivityIndicator, ScrollView } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import {
   Table,
@@ -60,19 +60,19 @@ const AnalysisResultFirstA = () => {
           strNumberHead.push(item);
         }
       });
-     let sortData = strNumberHead.sort(
-        (a, b) => 
-        {
-          if(Number(b[1]) + Number(b[3]) - Number(a[1]) - Number(a[3]) < 0){
-            return -1
-          }
-          else if(Number(b[1]) + Number(b[3]) - Number(a[1]) - Number(a[3]) == 0 && Math.max(Number(b[1]),Number(b[3])) - Math.max(Number(a[1]),Number(a[3])) < 0 ){
-            
-            return -1
-          }
-          return 0
+      let sortData = strNumberHead.sort((a, b) => {
+        if (Number(b[1]) + Number(b[3]) - Number(a[1]) - Number(a[3]) < 0) {
+          return -1;
+        } else if (
+          Number(b[1]) + Number(b[3]) - Number(a[1]) - Number(a[3]) == 0 &&
+          Math.max(Number(b[1]), Number(b[3])) -
+            Math.max(Number(a[1]), Number(a[3])) <
+            0
+        ) {
+          return -1;
         }
-      );
+        return 0;
+      });
       for (let i = 0; i < sortData.length; i++) {
         if (stringFirstHead.length < 3) {
           stringFirstHead += sortData[i][0];
@@ -102,7 +102,7 @@ const AnalysisResultFirstA = () => {
   }, []);
 
   return (
-    <View>
+    <ScrollView>
       <View style={{ backgroundColor: "#cbdfea", padding: 20 }}>
         <Text
           style={{
@@ -179,7 +179,7 @@ const AnalysisResultFirstA = () => {
                   key={index}
                   style={{
                     flexDirection: "row",
-                    backgroundColor: (index = 0 && "#cbdfea"),
+                    backgroundColor: (index == 0 && "#cbdfea"),
                   }}
                 >
                   {rowData.map((cellData, cellIndex) => (
@@ -200,7 +200,7 @@ const AnalysisResultFirstA = () => {
           </Table>
         )}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

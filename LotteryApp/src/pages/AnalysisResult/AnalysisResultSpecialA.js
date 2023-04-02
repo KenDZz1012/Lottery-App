@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Text, View, ActivityIndicator } from "react-native";
+import { Text, View, ActivityIndicator, ScrollView } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import {
   Table,
@@ -101,7 +101,7 @@ const AnalysisResultSpecialA = () => {
   }, []);
 
   return (
-    <View>
+    <ScrollView>
       <View style={{ backgroundColor: "#cbdfea", padding: 20 }}>
         <Text
           style={{
@@ -178,7 +178,7 @@ const AnalysisResultSpecialA = () => {
                   key={index}
                   style={{
                     flexDirection: "row",
-                    backgroundColor: (index = 0 && "#cbdfea"),
+                    backgroundColor: (index == 0 && "#cbdfea"),
                   }}
                 >
                   {rowData.map((cellData, cellIndex) => (
@@ -199,7 +199,7 @@ const AnalysisResultSpecialA = () => {
           </Table>
         )}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

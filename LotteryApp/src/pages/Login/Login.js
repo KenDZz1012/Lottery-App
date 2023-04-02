@@ -17,14 +17,18 @@ const Login = ({ navigation }) => {
   const [showPass, setShowPass] = useState(true);
   const [dataLogin, setDataLogin] = useState({
     userName: "admin",
-    password: "admin123",
+    password: "",
   });
 
   const onSubmit = () => {
     if (dataLogin.userName == "admin" && dataLogin.password == "admin123") {
+      setDataLogin({
+        ...dataLogin,
+        password: "",
+      });
       navigation.navigate("Main", { screen: "Menu" });
     } else {
-      Toast.show({  
+      Toast.show({
         type: "error",
         text1: "Sai tên đăng nhập hoặc mật khẩu",
       });
@@ -63,12 +67,12 @@ const Login = ({ navigation }) => {
             textAlign: "center",
           }}
         >
-          phân tích xổ số
+          Thần số học
         </Text>
         <Toast />
 
-        <Image
-          source={require("../../assets/logoIcon.png")}
+        {/* <Image
+          source={require("../../assets/logo.jpg")}
           style={{
             width: 130,
             height: 130,
@@ -76,12 +80,12 @@ const Login = ({ navigation }) => {
             zIndex: 2,
             marginTop: 50,
           }}
-        />
+        /> */}
         <Text
           style={{
             fontWeight: "bold",
             fontSize: 20,
-            marginTop: 20,
+            marginTop: 80,
             textTransform: "uppercase",
             textAlign: "center",
           }}
@@ -134,7 +138,7 @@ const Login = ({ navigation }) => {
             padding: 10,
           }}
           onChangeText={(text) => {
-            console.log(text)
+            console.log(text);
             setDataLogin({
               ...dataLogin,
               password: text,

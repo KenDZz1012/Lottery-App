@@ -14,7 +14,7 @@ const Menu = ({ navigation }) => {
     <View style={{ backgroundColor: "#fff", height: "100%" }}>
       <View style={{ marginTop: 80 }}>
         <Image
-          source={require("../../assets/logoIcon.png")}
+          source={require("../../assets/logo.png")}
           style={{
             width: 130,
             height: 130,
