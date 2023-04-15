@@ -158,7 +158,7 @@ const AnalysisResultFirstB = () => {
                       (rowData[1] == 5 || rowData[3] == 5) && index != 0
                         ? "#7471d8"
                         : rowData[1] >= 6 && rowData[3] >= 6 && index != 0
-                        ? "#fafa9f"
+                        ? "#ffef75"
                         : "#cbdfea",
                   }}
                 >

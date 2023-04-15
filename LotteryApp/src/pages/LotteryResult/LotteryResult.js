@@ -37,31 +37,59 @@ const LotteryResult = () => {
   const [tableData, setTableData] = useState([]);
   const [value, setValue] = useState();
   const [categories, setCategories] = useState([]);
+  const [categoryChild, setCategoryChild] = useState([]);
   const [page, setPage] = useState(1);
   const [totalSize, setTotalSize] = useState(0);
   const [loading, setLoading] = useState(false);
   const onFetchCategories = async () => {
     let dataCate = [];
-    const res = await axios.get("http://118.70.81.222:8081/api/v1/category");
+    const res = await axios.get(
+      "http://192.168.1.16/api/v1/category?isheader=true"
+    );
     res.data.map((item) => {
       dataCate.push({
+        ...item,
         label: item.categoryName,
         value: item.categoryId,
       });
     });
     setCategories(dataCate);
     setValue(dataCate[0].value);
+    if (dataCate[0].havechildren) {
+      onFetchCategoryChild(dataCate[0].value);
+    }
+  };
+
+  const onFetchCategoryChild = async (parentid) => {
+    let dataCate = [];
+    const res = await axios.get(
+      `http://192.168.1.16/api/v1/category?parentid=${parentid}`
+    );
+    res.data.map((item) => {
+      dataCate.push({
+        ...item,
+        label: item.categoryName,
+        value: item.categoryId,
+      });
+    });
+    setCategoryChild(dataCate);
+    setValue(dataCate[0].value);
   };
 
   useEffect(() => {
-    onFetchResults(value);
+    if (categories.find((item) => item.value == value)?.havechildren) {
+      console.log(value)
+      onFetchCategoryChild(value);
+    } else {
+      onFetchResults(value);
+    }
   }, [value, page]);
 
   const onFetchResults = async (categoryId) => {
     setLoading(true);
     let table = [["Id", "Ngày", "Đề", "Nhất", ""]];
     const res = await axios.get(
-      `http://118.70.81.222:8081/api/v1/Result?categoryId=${categoryId}&page=${page}`
+      `http://192.168.1.16/api/v1/Result?categoryId=${categoryId}&page=${page}`
     );
     setDataResults(res.data.ResultVMs);
     setTotalSize(res.data.totalSize);
@@ -75,7 +103,7 @@ const LotteryResult = () => {
       });
       for (const key of Object.keys(item)) {
         arrItem.push(item[key]);
-      } 
+      }
       table.push(arrItem);
     });
     setTableData(table);
@@ -88,7 +116,7 @@ const LotteryResult = () => {
 
   const onDelete = async () => {
     const res = await axios.delete(
-      `http://118.70.81.222:8081/api/v1/category/${value}`
+      `http://192.168.1.16/api/v1/category/${value}`
     );
     if (res.status == 200) {
       Toast.show({
@@ -102,7 +130,7 @@ const LotteryResult = () => {
 
   const onDeleteResult = async () => {
     const res = await axios.delete(
-      `http://118.70.81.222:8081/api/v1/result/${row.resultId}`
+      `http://192.168.1.16/api/v1/result/${row.resultId}`
     );
     if (res.status == 200) {
       Toast.show({
@@ -152,6 +180,23 @@ const LotteryResult = () => {
           }}
           placeholder=""
         />
+        {
+          categoryChild.length > 0 && 
+           <DropDownPicker
+          //  open={open}
+          //  value={value}
+           items={categoryChild}
+          //  setOpen={setOpen}
+          //  setValue={setValue}
+          //  onChangeValue={(val) => {
+          //    if (val != null) {
+          //      setPage(1);
+          //      setValue(val);
+          //    }
+          //  }}
+           placeholder=""
+         />
+        }
         <TouchableOpacity
           onPress={() => {
             setModalTypeLottery(true);

@@ -23,7 +23,7 @@ const AnalysisResultFirstA = () => {
   const [loading, setLoading] = useState(false);
   const onFetchCategories = async () => {
     let dataCate = [];
-    const res = await axios.get("http://118.70.81.222:8081/api/v1/category");
+    const res = await axios.get("http://192.168.1.16/api/v1/category");
     res.data.map((item) => {
       dataCate.push({
         label: item.categoryName,
@@ -44,7 +44,7 @@ const AnalysisResultFirstA = () => {
     let strNumberHead = [];
 
     const res = await axios.get(
-      `http://118.70.81.222:8081/api/v1/result/CalResultHead?type=firstprize&categoryId=${categoryId}`
+      `http://192.168.1.16/api/v1/result/CalResultHead?type=firstprize&categoryId=${categoryId}`
     );
     if (res.status == 200) {
       res.data.map((item, index) => {
@@ -157,7 +157,7 @@ const AnalysisResultFirstA = () => {
                       (rowData[1] == 5 || rowData[3] == 5) && index != 0
                         ? "#7471d8"
                         : rowData[1] >= 6 && rowData[3] >= 6 && index != 0
-                        ? "#fafa9f"
+                        ? "#ffef75"
                         : "#cbdfea",
                   }}
                 >
