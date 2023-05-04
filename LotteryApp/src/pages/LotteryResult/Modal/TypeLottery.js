@@ -4,17 +4,38 @@ import { Alert, Modal, Text, TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-element-textinput";
 import Toast from "react-native-toast-message";
 
-const TypeLottery = ({ modal, onToggle, data, isEdit, onFetchCategories }) => {
+const TypeLottery = ({
+  modal,
+  onToggle,
+  data,
+  isEdit,
+  onFetchCategories,
+  isChild,
+  parentid,
+  onFetchCategoryChild,
+}) => {
   const [dataPost, setDataPost] = useState({
     categoryId: 0,
     categoryName: "",
+    parentid: null,
+    isheader: true,
   });
   useEffect(() => {
     if (isEdit) {
       setDataPost({
         categoryId: data.value,
         categoryName: data.label,
+        isheader: data.isheader,
+        parentid: data.parentid,
       });
+    } else {
+      if (isChild) {
+        setDataPost({
+          ...dataPost,
+          parentid: parentid,
+          isheader: false,
+        });
+      }
     }
   }, [modal]);
 
@@ -36,7 +57,11 @@ const TypeLottery = ({ modal, onToggle, data, isEdit, onFetchCategories }) => {
           });
           setTimeout(() => {
             onToggle();
-            onFetchCategories();
+            if (isChild) {
+              onFetchCategoryChild(parentid);
+            } else {
+              onFetchCategories();
+            }
           }, 1500);
         })
         .catch((ex) => {
@@ -55,7 +80,11 @@ const TypeLottery = ({ modal, onToggle, data, isEdit, onFetchCategories }) => {
           });
           setTimeout(() => {
             onToggle();
-            onFetchCategories();
+            if (isChild) {
+              onFetchCategoryChild(parentid);
+            } else {
+              onFetchCategories();
+            }
           }, 1500);
         })
         .catch((ex) => {

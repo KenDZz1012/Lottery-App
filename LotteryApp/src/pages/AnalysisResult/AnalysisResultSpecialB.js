@@ -15,6 +15,10 @@ const AnalysisResultSpecialB = () => {
   const [value, setValue] = useState();
   const [open, setOpen] = useState(false);
 
+  const [categoryChild, setCategoryChild] = useState([]);
+
+  const [valueChild, setValueChild] = useState();
+  const [openChild, setOpenChild] = useState(false);
   const [tableHead, setTableHead] = useState();
   const [tableData, setTableData] = useState([["Đầu", "", "Đít", ""]]);
   const widthArr = [115.5, 100, 98.5, 98];
@@ -23,9 +27,12 @@ const AnalysisResultSpecialB = () => {
 
   const onFetchCategories = async () => {
     let dataCate = [];
-    const res = await axios.get("http://192.168.1.16/api/v1/category");
+    const res = await axios.get(
+      "http://118.70.81.222:8081/api/v1/category?isheader=true"
+    );
     res.data.map((item) => {
       dataCate.push({
+        ...item,
         label: item.categoryName,
         value: item.categoryId,
       });
@@ -42,7 +49,7 @@ const AnalysisResultSpecialB = () => {
     let stringThirdHead = "";
     let strNumberHead = [];
     const res = await axios.get(
-      `http://192.168.1.16/api/v1/result/CalResultTail?type=specialprize&categoryId=${categoryId}`
+      `http://118.70.81.222:8081/api/v1/result/CalResultTail?type=specialprize&categoryId=${categoryId}`
     );
     if (res.status == 200) {
       res.data.map((item, index) => {
@@ -91,9 +98,35 @@ const AnalysisResultSpecialB = () => {
     }
   };
 
+  const onFetchCategoryChild = async (parentid) => {
+    const res = await axios.get(
+      `http://118.70.81.222:8081/api/v1/category?parentid=${parentid}`
+    );
+    if (res.data.length > 0) {
+      let dataCate = [];
+      res.data.map((item) => {
+        dataCate.push({
+          ...item,
+          label: item.categoryName,
+          value: item.categoryId,
+        });
+      });
+      setValueChild(dataCate[0].value);
+      setCategoryChild(dataCate);
+    } else {
+      setValueChild()
+      setCategoryChild([]);
+      onFetchCalResult(value);
+    }
+  };
+
   useEffect(() => {
-    onFetchCalResult(value);
+    onFetchCategoryChild(value);
   }, [value]);
+
+  useEffect(() => {
+    onFetchCalResult(valueChild);
+  }, [valueChild]);
 
   useMemo(() => {
     onFetchCategories();
@@ -119,7 +152,7 @@ const AnalysisResultSpecialB = () => {
           marginTop: 20,
           flexDirection: "row",
           padding: 10,
-          zIndex: 10,
+          zIndex: 11,
         }}
       >
         <DropDownPicker
@@ -135,6 +168,31 @@ const AnalysisResultSpecialB = () => {
             }
           }}
         />
+      </View>
+      <View
+        style={{
+          width: "60%",
+          marginTop: 20,
+          flexDirection: "row",
+          padding: 10,
+          zIndex: 10,
+        }}
+      >
+        {categoryChild.length > 0 && (
+          <DropDownPicker
+            open={openChild}
+            value={valueChild}
+            items={categoryChild}
+            setOpen={setOpenChild}
+            setValue={setValueChild}
+            onChangeValue={(val) => {
+              if (val != null) {
+                setValueChild(val);
+              }
+            }}
+            placeholder=""
+          />
+        )}
       </View>
       <View>
         {loading ? (
@@ -177,7 +235,7 @@ const AnalysisResultSpecialB = () => {
                   key={index}
                   style={{
                     flexDirection: "row",
-                    backgroundColor: (index == 0 && "#cbdfea"),
+                    backgroundColor: index == 0 && "#cbdfea",
                   }}
                 >
                   {rowData.map((cellData, cellIndex) => (

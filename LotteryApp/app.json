@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "lotteapp",
+    "name": "thần số học",
     "slug": "tinhtoanthanthanh",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -19,7 +19,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "TinhToanMoiNgay",
       "bitcode": false,
-      "buildNumber": "4"
+      "buildNumber": "5"
     },
     "android": {
       "adaptiveIcon": {

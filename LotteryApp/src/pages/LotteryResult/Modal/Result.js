@@ -120,7 +120,6 @@ const Result = ({
           />
           <TextInput
             keyboardType="numeric"
-            maxLength={5}
             placeholder="Đề"
             style={{
               borderColor: "#ccc",
@@ -141,8 +140,6 @@ const Result = ({
 
           <TextInput
             keyboardType="numeric"
-            l
-            maxLength={5}
             placeholder="Nhất"
             style={{
               borderColor: "#ccc",

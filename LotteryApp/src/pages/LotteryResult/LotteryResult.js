@@ -32,6 +32,8 @@ const LotteryResult = () => {
   const [dataResults, setDataResults] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openChild, setOpenChild] = useState(false);
+
   const [isEditResult, setIsEditResult] = useState(false);
   const [row, setRow] = useState(null);
   const [tableData, setTableData] = useState([]);
@@ -41,10 +43,12 @@ const LotteryResult = () => {
   const [page, setPage] = useState(1);
   const [totalSize, setTotalSize] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [valueChild, setValueChild] = useState();
+  const [isChild, setIsChild] = useState(false);
   const onFetchCategories = async () => {
     let dataCate = [];
     const res = await axios.get(
-      "http://192.168.1.16/api/v1/category?isheader=true"
+      "http://118.70.81.222:8081/api/v1/category?isheader=true"
     );
     res.data.map((item) => {
       dataCate.push({
@@ -55,7 +59,7 @@ const LotteryResult = () => {
     });
     setCategories(dataCate);
     setValue(dataCate[0].value);
-    if (dataCate[0].havechildren) {
+    if (dataCate[0].havechild) {
       onFetchCategoryChild(dataCate[0].value);
     }
   };
@@ -63,51 +67,61 @@ const LotteryResult = () => {
   const onFetchCategoryChild = async (parentid) => {
     let dataCate = [];
     const res = await axios.get(
-      `http://192.168.1.16/api/v1/category?parentid=${parentid}`
+      `http://118.70.81.222:8081/api/v1/category?parentid=${parentid}`
     );
-    res.data.map((item) => {
-      dataCate.push({
-        ...item,
-        label: item.categoryName,
-        value: item.categoryId,
+    if (res.data.length > 0) {
+      res.data.map((item) => {
+        dataCate.push({
+          ...item,
+          label: item.categoryName,
+          value: item.categoryId,
+        });
       });
-    });
-    setCategoryChild(dataCate);
-    setValue(dataCate[0].value);
+      setValueChild(dataCate[0].value);
+      setCategoryChild(dataCate);
+    } else {
+      setValueChild();
+      setCategoryChild([]);
+      onFetchResults(value);
+    }
   };
 
   useEffect(() => {
-    if (categories.find((item) => item.value == value)?.havechildren) {
-      console.log(value)
-      onFetchCategoryChild(value);
-    } else {
-      onFetchResults(value);
-    }
-  }, [value, page]);
+    onFetchCategoryChild(value);
+  }, [value]);
+
+  useEffect(() => {
+    onFetchResults(valueChild);
+  }, [valueChild]);
+
+  useEffect(() => {
+    onFetchResults(categoryChild.length > 0 ? valueChild : value);
+  }, [page]);
 
   const onFetchResults = async (categoryId) => {
-    setLoading(true);
-    let table = [["Id", "Ngày", "Đề", "Nhất", ""]];
-    const res = await axios.get(
-      `http://192.168.1.16/api/v1/Result?categoryId=${categoryId}&page=${page}`
-    );
-    setDataResults(res.data.ResultVMs);
-    setTotalSize(res.data.totalSize);
-    console.log(res.data);
-    res.data.ResultVMs.map((item) => {
-      let arrItem = [];
-      item.dateIn = new Date(item.dateIn).toLocaleString("vi-VN", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
+    if (categoryId) {
+      setLoading(true);
+      let table = [["Id", "Ngày", "Đề", "Nhất", ""]];
+      const res = await axios.get(
+        `http://118.70.81.222:8081/api/v1/Result?categoryId=${categoryId}&page=${page}`
+      );
+      setDataResults(res.data.ResultVMs);
+      setTotalSize(res.data.totalSize);
+      res.data.ResultVMs.map((item) => {
+        let arrItem = [];
+        item.dateIn = new Date(item.dateIn).toLocaleString("vi-VN", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        });
+        for (const key of Object.keys(item)) {
+          arrItem.push(item[key]);
+        }
+        table.push(arrItem);
       });
-      for (const key of Object.keys(item)) {
-        arrItem.push(item[key]);
-      }
-      table.push(arrItem);
-    });
-    setTableData(table);
-    setLoading(false);
+      setTableData(table);
+      setLoading(false);
+    }
   };
 
   useMemo(() => {
@@ -116,30 +130,41 @@ const LotteryResult = () => {
 
   const onDelete = async () => {
     const res = await axios.delete(
-      `http://192.168.1.16/api/v1/category/${value}`
+      `http://118.70.81.222:8081/api/v1/category/${
+        isChild ? valueChild : value
+      }`
     );
     if (res.status == 200) {
       Toast.show({
-        type: "info",
+        type: "success",
         text1: "Xóa thành công",
       });
-      setModalConfirmDelete(false);
-      onFetchCategories();
+      setTimeout(() => {
+        setModalConfirmDelete(false);
+        if (isChild) {
+          onFetchCategoryChild(value);
+        } else {
+          onFetchCategories();
+        }
+      }, 1500);
     }
   };
 
   const onDeleteResult = async () => {
     const res = await axios.delete(
-      `http://192.168.1.16/api/v1/result/${row.resultId}`
+      `http://118.70.81.222:8081/api/v1/result/${row.resultId}`
     );
     if (res.status == 200) {
       Toast.show({
-        type: "info",
+        type: "success",
         text1: "Xóa thành công",
       });
-      setModalConfirmDelete(false);
-      onFetchResults(value);
-      setIsDeleteResult(false);
+
+      setTimeout(() => {
+        setModalConfirmDelete(false);
+        onFetchResults(categoryChild.length > 0 ? valueChild : value);
+        setIsDeleteResult(false);
+      }, 1500);
     }
   };
 
@@ -163,7 +188,7 @@ const LotteryResult = () => {
           marginTop: 20,
           flexDirection: "row",
           padding: 10,
-          zIndex: 10,
+          zIndex: 11,
         }}
       >
         <DropDownPicker
@@ -180,25 +205,10 @@ const LotteryResult = () => {
           }}
           placeholder=""
         />
-        {
-          categoryChild.length > 0 && 
-           <DropDownPicker
-          //  open={open}
-          //  value={value}
-           items={categoryChild}
-          //  setOpen={setOpen}
-          //  setValue={setValue}
-          //  onChangeValue={(val) => {
-          //    if (val != null) {
-          //      setPage(1);
-          //      setValue(val);
-          //    }
-          //  }}
-           placeholder=""
-         />
-        }
+
         <TouchableOpacity
           onPress={() => {
+            setIsChild(false);
             setModalTypeLottery(true);
             setIsEdit(false);
           }}
@@ -211,6 +221,7 @@ const LotteryResult = () => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
+            setIsChild(false);
             setModalTypeLottery(true);
             setIsEdit(true);
           }}
@@ -223,6 +234,7 @@ const LotteryResult = () => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
+            setIsChild(false);
             setModalConfirmDelete(true);
             setIsDeleteResult(false);
           }}
@@ -234,6 +246,73 @@ const LotteryResult = () => {
           />
         </TouchableOpacity>
       </View>
+
+      {categoryChild.length > 0 && (
+        <View
+          style={{
+            width: "60%",
+            marginTop: 20,
+            flexDirection: "row",
+            padding: 10,
+            zIndex: 10,
+          }}
+        >
+          <DropDownPicker
+            open={openChild}
+            value={valueChild}
+            items={categoryChild}
+            setOpen={setOpenChild}
+            setValue={setValueChild}
+            onChangeValue={(val) => {
+              if (val != null) {
+                setPage(1);
+                setValueChild(val);
+              }
+            }}
+            placeholder=""
+          />
+
+          <TouchableOpacity
+            onPress={() => {
+              setIsChild(true);
+              setModalTypeLottery(true);
+              setIsEdit(false);
+            }}
+          >
+            <MaterialCommunityIcons
+              name="plus-circle-outline"
+              size={40}
+              style={{ marginLeft: 10 }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setIsChild(true);
+              setModalTypeLottery(true);
+              setIsEdit(true);
+            }}
+          >
+            <MaterialCommunityIcons
+              name="pencil-circle-outline"
+              size={40}
+              style={{ marginLeft: 10 }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setIsChild(true);
+              setModalConfirmDelete(true);
+              setIsDeleteResult(false);
+            }}
+          >
+            <MaterialCommunityIcons
+              name="delete-circle-outline"
+              size={40}
+              style={{ marginLeft: 10 }}
+            />
+          </TouchableOpacity>
+        </View>
+      )}
       <View
         style={{
           backgroundColor: "#cbdfea",
@@ -378,8 +457,15 @@ const LotteryResult = () => {
             setModalTypeLottery(false);
           }}
           isEdit={isEdit}
-          data={categories.find((item) => item.value == value)}
+          data={
+            !isChild
+              ? categories.find((item) => item.value == value)
+              : categoryChild.find((item) => item.value == valueChild)
+          }
           onFetchCategories={onFetchCategories}
+          isChild={isChild}
+          parentid={isChild ? value : null}
+          onFetchCategoryChild={onFetchCategoryChild}
         />
         <ConfirmDelete
           modal={modalConfirmDelete}
@@ -396,7 +482,7 @@ const LotteryResult = () => {
             setIsCreateResult(false);
             setIsEdit(false);
           }}
-          categoryId={value}
+          categoryId={categoryChild.length > 0 ? valueChild : value}
           onFetchResults={onFetchResults}
         />
       </View>

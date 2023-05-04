@@ -138,7 +138,6 @@ const Login = ({ navigation }) => {
             padding: 10,
           }}
           onChangeText={(text) => {
-            console.log(text);
             setDataLogin({
               ...dataLogin,
               password: text,
